@@ -59,6 +59,8 @@ def main() -> int:
                             frequency=3, impact="high", confidence=0.9,
                             eval_criteria="fair-rental-days-001 passes; regression clean")
     finding.approve()
+    from harness.feedback.store import FindingStore  # noqa: E402
+    FindingStore(REPO_ROOT / ".harness" / "findings").save(finding)
     case = finding_to_eval_case(finding, "app.mapper", "map_rental", "../fixtures/rental_001.json",
                                 "../expected/rental_001.json", keys=["fair_rental_days", "other_expenses"],
                                 category="mapping_error")

@@ -45,6 +45,9 @@ def main() -> None:
     c = sub.add_parser("compare")
     c.add_argument("--baseline", required=True, help="baseline eval_report.json")
     c.add_argument("--candidate", required=True, help="candidate eval_report.json")
+    s = sub.add_parser("serve")
+    s.add_argument("--host", default="127.0.0.1")
+    s.add_argument("--port", type=int, default=8080)
     a = ap.parse_args()
 
     if a.cmd == "task-run":
@@ -80,6 +83,12 @@ def main() -> None:
         from .evals.runner import compare_reports
 
         print(json.dumps(compare_reports(_load(a.baseline), _load(a.candidate)), indent=2))
+    elif a.cmd == "serve":
+        from .web.server import serve
+
+        if a.host not in ("127.0.0.1", "localhost", "::1"):
+            raise SystemExit("refusing non-localhost bind without auth (see docs/security_model.md)")
+        serve(a.host, a.port, Path(".").resolve()).serve_forever()
 
 
 if __name__ == "__main__":

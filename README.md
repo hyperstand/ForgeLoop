@@ -209,6 +209,19 @@ python -m harness.cli compare --baseline artifacts/baseline_report.json --candid
 
 Every `task-run` / `eval-run` appends cost and latency records to `.harness/ledger.jsonl` for model-comparison audits.
 
+## Dashboard
+
+A stdlib-only local web UI (no extra dependencies):
+
+```powershell
+python -m harness.cli serve --port 8080
+```
+
+Browse tasks, eval reports, findings, redacted traces, and the run ledger at `http://127.0.0.1:8080`.
+Two actions are available in the browser: approving eligible findings and triggering eval/demo runs —
+both CSRF-protected, localhost-only, audit-logged, and bound by the same validation gates as the CLI.
+See `docs/operations.md` for details.
+
 ## Security model
 
 ForgeLoop is designed around explicit execution permissions and independent validation.

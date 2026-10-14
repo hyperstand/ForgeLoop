@@ -11,4 +11,7 @@
 - Resume is checkpoint-based (`AgentEngine.run(..., checkpoint_path, resume_from)` replays
   messages without re-executing tools; `TaskStore.resume` restores lifecycle state). No WAL; eval farm is single-process.
 - Windows-first paths; POSIX assumed compatible but CI only ran Windows + Python 3.13 here.
+- Dashboard: localhost-only + per-process CSRF, no auth beyond that, no live log streaming
+  (poll/reload), no in-browser source editing, no auto-merge. Findings persist to
+  `.harness/findings/*.json` (written by `demo/run_demo.py` and the approve endpoint).
 - Deps: `pyyaml`, `pytest` only — by design; any addition needs justification here.

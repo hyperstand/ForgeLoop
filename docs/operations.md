@@ -47,6 +47,16 @@ without keys the Anthropic adapter raises `missing_creds` and live tests skip.
 (`harness/evals/model_compare.py`: same suite, multiple providers, one table with
 provider/model/params/tool-compat/cost) are recorded as `comparison` entries.
 
+## Dashboard (stdlib only, localhost)
+```powershell
+python -m harness.cli serve --port 8080   # or: python -m harness.web --port 8080
+```
+Pages: overview (tasks, ledger, candidates), task detail, evals (run form), findings
+(approve button), redacted trace view, ledger. Exactly two actions exist:
+`POST /findings/<id>/approve` (same gate as `Finding.approve()`) and `POST /runs`
+(`kind=eval` on allowlisted suites/worktrees, or `kind=demo`). All POSTs need the
+per-process CSRF token, bind is refused outside localhost, and actions are audit-logged.
+
 ## Layout notes
 Task env: `candidates/<id>/{task.yaml,EXEC_PLAN.md,RESULTS.md,repo/,evidence/,evals/,artifacts/}`.
 `repo/` writable; `evidence/` + `evals/expected` read-only + SHA-pinned.

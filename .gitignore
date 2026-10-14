@@ -1,0 +1,6 @@
+candidates/*/
+!.agents/
+!candidates/README.md
+.harness/
+__pycache__/
+*.pyc

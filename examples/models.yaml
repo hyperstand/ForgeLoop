@@ -1,0 +1,10 @@
+default: mock
+providers:
+  mock:
+    kind: mock
+  openai_compat:
+    kind: openai_compat
+    base_url: "${OPENAI_BASE_URL:-https://api.openai.com/v1}"
+    model: "${HARNESS_MODEL:-gpt-4o-mini}"
+    api_key_env: OPENAI_API_KEY
+    timeout_s: 60

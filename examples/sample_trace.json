@@ -1,0 +1,1 @@
+{"code_versions": {"mapper": "baseline-buggy"}, "correction": {"fair_rental_days": 5}, "id": "trace-rental-001", "model": "mock-1", "outcome": "corrected", "prediction": {"fair_rental_days": 0}, "provider": "mock", "task_id": "demo", "version": "v1"}

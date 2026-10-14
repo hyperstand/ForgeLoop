@@ -1,0 +1,1 @@
+{"description": "Fix fair_rental_days mapping per FIND-RENTAL-0042", "files_changed": [], "id": "FIND-RENTAL-0042", "state": "CREATED", "success_criteria": ["fair-rental-days-001 passes", "regression clean", "human APPROVED"]}

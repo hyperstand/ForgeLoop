@@ -1,0 +1,18 @@
+dataset_version: v1
+cases:
+  - id: regression-002
+    module: app.mapper
+    function: map_rental
+    fixture: ../fixtures/rental_002.json
+    expected: ../expected/rental_002.json
+    method: exact
+    keys: [fair_rental_days, other_expenses]
+    category: mapping_error
+  - id: regression-003
+    module: app.mapper
+    function: map_rental
+    fixture: ../fixtures/rental_003.json
+    expected: ../expected/rental_003.json
+    method: exact
+    keys: [fair_rental_days, other_expenses]
+    category: mapping_error

@@ -1,4 +1,4 @@
-# Implementation Plan — milestones and acceptance
+# ForgeLoop — Implementation Plan — milestones and acceptance
 
 ## M1 Research + architecture — DONE when docs/ has 8 files + AGENTS.md + git init
 - Acceptance: `architecture_research.md` cites sources with verified/inferred split; audit states empty start.

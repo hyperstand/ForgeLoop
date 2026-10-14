@@ -1,4 +1,4 @@
-# Architecture Research — public Codex + self-improving tax agents
+# ForgeLoop — Architecture Research — public Codex + self-improving tax agents
 
 Scope: what public sources actually show. No proprietary internals claimed.
 Status terms: **Verified** = directly observable in public docs/source; **Inferred** = reasonable

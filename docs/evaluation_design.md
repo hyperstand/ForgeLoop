@@ -1,4 +1,4 @@
-# Evaluation Design — trace, dataset, grader, regression
+# ForgeLoop — Evaluation Design — trace, dataset, grader, regression
 
 ## Trace (schema v1, `harness/traces/schema.py`)
 `trace_id, task_id, ts, provider, model, params, context_refs, tool_calls[{name,args,result,latency}],

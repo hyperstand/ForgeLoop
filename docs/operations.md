@@ -1,4 +1,4 @@
-# Operations — install, configure, run
+# ForgeLoop — Operations — install, configure, run
 
 ## Install
 ```powershell

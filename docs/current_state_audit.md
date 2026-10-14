@@ -1,4 +1,4 @@
-# Current-State Audit (M1)
+# ForgeLoop — Current-State Audit (M1)
 
 Date: 2026-10-14. Workspace: `D:\llm_new`.
 

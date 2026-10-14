@@ -1,4 +1,4 @@
-# AGENTS.md — Coding-Agent Harness Repo
+# AGENTS.md — ForgeLoop Repo
 
 ## Project norms
 - Python 3.11+ (verified 3.13.13). Stdlib-first; only declared dep is `pyyaml` (+ `pytest` for tests).

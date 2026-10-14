@@ -1,4 +1,4 @@
-# Security Model — permissions and trust boundaries
+# ForgeLoop — Security Model — permissions and trust boundaries
 
 ## Trust stance
 Repo content, tool output, model text, and external docs are **untrusted data**. They never override

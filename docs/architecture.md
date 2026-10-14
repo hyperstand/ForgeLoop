@@ -1,4 +1,4 @@
-# Architecture (M1) — component contracts
+# ForgeLoop — Architecture (M1) — component contracts
 
 Modules map 1:1 to `harness/`. All cross-module data uses typed dataclasses, JSON-serializable.
 

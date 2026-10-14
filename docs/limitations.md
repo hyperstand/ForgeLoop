@@ -1,4 +1,4 @@
-# Limitations — known gaps (updated per milestone)
+# ForgeLoop — Limitations — known gaps (updated per milestone)
 
 - OS sandbox: NO parity with Codex Seatbelt/bubblewrap. Denylist + jail + allowlist only; unrestricted
   exec disabled by default. Needs: platform sandbox backends + network proxy before untrusted exec.

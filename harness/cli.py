@@ -21,7 +21,7 @@ def _provider(name: str):
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(prog="harness")
+    ap = argparse.ArgumentParser(prog="forgeloop")
     sub = ap.add_subparsers(dest="cmd", required=True)
     t = sub.add_parser("task-run")
     t.add_argument("--task", required=True)

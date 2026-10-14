@@ -1,1 +1,1 @@
-"""Model-agnostic coding-agent harness."""
+"""ForgeLoop — model-agnostic coding-agent harness."""

@@ -6,7 +6,7 @@ ForgeLoop is an extensible engineering platform for building, running, evaluatin
 
 Inspired by publicly documented Codex architecture and OpenAI's *Building self-improving tax agents with Codex*, ForgeLoop explores how to build an independent coding-agent harness without coupling its core architecture to a single LLM provider.
 
-> **Project status:** M1–M6 implemented and verified offline (`pytest -q` → 54 passed; `python demo/run_demo.py` reproduces end to end). Live Anthropic/OpenAI runs are untested here (no keys) — live tests skip. Remaining: Ollama/local adapter, live provider verification.
+> **Project status:** M1–M6 + local dashboard implemented and verified offline (`pytest -q` → 68 passed; `python demo/run_demo.py` reproduces end to end). Live Anthropic/OpenAI runs are untested here (no keys) — live tests skip. Remaining: Ollama/local adapter, live provider verification.
 
 ## Why ForgeLoop?
 
@@ -221,6 +221,31 @@ Browse tasks, eval reports, findings, redacted traces, and the run ledger at `ht
 Two actions are available in the browser: approving eligible findings and triggering eval/demo runs —
 both CSRF-protected, localhost-only, audit-logged, and bound by the same validation gates as the CLI.
 See `docs/operations.md` for details.
+
+## Screenshots
+
+| Overview | Findings |
+|---|---|
+| ![Dashboard overview](docs/screenshots/overview.png) | ![Findings with approve button](docs/screenshots/findings.png) |
+
+To capture them yourself (this environment has no browser tooling, so screenshots are taken manually):
+
+```powershell
+cd D:\llm_new
+python demo/run_demo.py                    # so the dashboard has real data
+python -m harness.cli serve --port 8080
+```
+
+Then open `http://127.0.0.1:8080` in Edge/Chrome and capture each page:
+
+1. **Overview** (`/`) → save as `docs/screenshots/overview.png`
+2. **Findings** (`/findings`) → save as `docs/screenshots/findings.png`
+3. Optional: a task page (`/tasks/<id>`) → `docs/screenshots/task.png`, and an eval report → `docs/screenshots/eval.png`
+
+Capture options on Windows: press `Win+Shift+S` and drag a region (copies to clipboard, paste into
+Paint and save as PNG), or in Edge press `Ctrl+Shift+S` for the built-in web screenshot tool
+(full-page capture works well for the eval tables). Keep captures at 100% zoom and ~1280px wide so
+text stays readable on GitHub.
 
 ## Security model
 

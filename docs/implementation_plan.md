@@ -22,9 +22,15 @@
 - Acceptance: baseline eval fails, candidate fix passes targeted + regression, `RESULTS.md` + patch +
   engineering report generated; eval expectations immutable during run (test asserts SHA).
 
-## M6 Multi-model + hardening (deferred)
-- Second live adapter (Anthropic or Ollama-local), model comparison log, resume tests, security tests,
-  observability. Acceptance: live tests skip cleanly without creds; documented in limitations.md.
+## M6 Multi-model + hardening — SHIPPED (live runs pending creds)
+- Second live adapter (`anthropic.py`, native Messages API) + config-driven factory
+  (`providers/factory.py`; `examples/models.yaml` covers mock/openai_compat/anthropic).
+- Model comparison (`evals/model_compare.py`: same suite, provider/model/params/tool-compat/cost table).
+- Resumability: engine checkpoints (`checkpoint_path`/`resume_from`) + `TaskStore.resume` tests.
+- Resource limits: iteration/wall-clock/token/tool-call/output-cap tests.
+- Security tests: jail escapes (incl. symlink), denylist backstop, exec gating, redaction, injection-as-data.
+- Observability: run ledger (`.harness/ledger.jsonl`) wired into CLI; comparison entries recorded.
+- Acceptance: `pytest -q` green offline; live Anthropic/OpenAI runs skip without keys (documented, not faked).
 
 ## Runnable-state rule
 Every milestone ends with `pytest -q` green and `python demo/run_demo.py` (from M5) reproducible.

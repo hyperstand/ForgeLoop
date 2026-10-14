@@ -1,12 +1,13 @@
 """Bounded agent execution loop. Model proposes; registry disposes."""
 from __future__ import annotations
 
+import json
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List
 
-from ..providers.base import ChatMessage, ModelProvider, ProviderError
+from ..providers.base import ChatMessage, ModelProvider, ProviderError, ToolCallRequest
 from ..security.policy import enforce_output_cap
 from ..tools.registry import ToolContext, ToolError, ToolRegistry
 
@@ -32,6 +33,20 @@ class AgentResult:
     trace_id: str = ""
 
 
+def _msg_to_dict(m: ChatMessage) -> Dict[str, Any]:
+    return {"role": m.role, "content": m.content,
+            "tool_calls": [{"id": t.id, "name": t.name, "arguments": t.arguments} for t in m.tool_calls],
+            "tool_call_id": m.tool_call_id, "name": m.name}
+
+
+def _msg_from_dict(d: Dict[str, Any]) -> ChatMessage:
+    return ChatMessage(role=d["role"], content=d.get("content", ""),
+                       tool_calls=[ToolCallRequest(id=t.get("id", ""), name=t["name"],
+                                                   arguments=t.get("arguments", {}))
+                                   for t in d.get("tool_calls", [])],
+                       tool_call_id=d.get("tool_call_id", ""), name=d.get("name", ""))
+
+
 class AgentEngine:
     def __init__(self, provider: ModelProvider, registry: ToolRegistry, config: EngineConfig | None = None):
         self.provider = provider
@@ -44,15 +59,28 @@ class AgentEngine:
         worktree: Path,
         instructions: str = "",
         ctx_extra: Dict[str, Any] | None = None,
+        checkpoint_path: Path | str | None = None,
+        resume_from: Path | str | None = None,
     ) -> AgentResult:
         t0 = time.time()
         usage = {"tokens_in": 0, "tokens_out": 0, "tool_calls": 0}
         ctx = ToolContext(worktree=Path(worktree))
-        system = "You are a coding agent. Use only the provided tools. Ask for clarification when evidence is insufficient."
-        if instructions:
-            system += "\n\n--- project-doc ---\n" + instructions[:32768]
-        messages = [ChatMessage(role="system", content=system), ChatMessage(role="user", content=task)]
+        if resume_from and Path(resume_from).is_file():
+            saved = json.loads(Path(resume_from).read_text())
+            messages = [_msg_from_dict(d) for d in saved["messages"]]
+            usage.update(saved.get("usage", {}))
+        else:
+            system = "You are a coding agent. Use only the provided tools. Ask for clarification when evidence is insufficient."
+            if instructions:
+                system += "\n\n--- project-doc ---\n" + instructions[:32768]
+            messages = [ChatMessage(role="system", content=system), ChatMessage(role="user", content=task)]
         tool_log: List[Dict[str, Any]] = []
+
+        def _checkpoint() -> None:
+            if checkpoint_path:
+                p = Path(checkpoint_path)
+                p.parent.mkdir(parents=True, exist_ok=True)
+                p.write_text(json.dumps({"messages": [_msg_to_dict(m) for m in messages], "usage": usage}))
 
         for _ in range(self.config.max_iterations):
             if time.time() - t0 > self.config.wall_clock_s:
@@ -74,6 +102,7 @@ class AgentEngine:
                 return AgentResult("budget_exceeded", "token budget exceeded", usage=usage)
             msg = res.message
             messages.append(msg)
+            _checkpoint()
             if not msg.tool_calls:
                 text = enforce_output_cap(msg.content or "", self.config.max_output_bytes)
                 return AgentResult("completed", text, usage=usage)
@@ -88,4 +117,6 @@ class AgentEngine:
                     body = f"TOOL_ERROR {type(e).__name__}: {e}"
                 tool_log.append({"tool": tc.name, "args": tc.arguments})
                 messages.append(ChatMessage(role="tool_result", content=body, tool_call_id=tc.id, name=tc.name))
+                _checkpoint()
+        _checkpoint()
         return AgentResult("budget_exceeded", "iteration budget exceeded", usage=usage)

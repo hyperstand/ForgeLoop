@@ -8,3 +8,9 @@ providers:
     model: "${HARNESS_MODEL:-gpt-4o-mini}"
     api_key_env: OPENAI_API_KEY
     timeout_s: 60
+  anthropic:
+    kind: anthropic
+    base_url: "${ANTHROPIC_BASE_URL:-https://api.anthropic.com}"
+    model: "${HARNESS_ANTHROPIC_MODEL:-claude-sonnet-4-5}"
+    api_key_env: ANTHROPIC_API_KEY
+    timeout_s: 60

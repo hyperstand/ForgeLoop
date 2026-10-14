@@ -6,7 +6,7 @@ ForgeLoop is an extensible engineering platform for building, running, evaluatin
 
 Inspired by publicly documented Codex architecture and OpenAI's *Building self-improving tax agents with Codex*, ForgeLoop explores how to build an independent coding-agent harness without coupling its core architecture to a single LLM provider.
 
-> **Project status:** M1–M5 implemented and verified (commit `a69dc7b`; `pytest -q` → 20 passed; `python demo/run_demo.py` reproduces end to end). M6 hardening is deferred — see the roadmap below and `docs/limitations.md`.
+> **Project status:** M1–M6 implemented and verified offline (`pytest -q` → 54 passed; `python demo/run_demo.py` reproduces end to end). Live Anthropic/OpenAI runs are untested here (no keys) — live tests skip. Remaining: Ollama/local adapter, live provider verification.
 
 ## Why ForgeLoop?
 
@@ -45,8 +45,9 @@ Agent Execution Engine
        |
        +---- Model Provider
        |       +---- OpenAI-compatible API
+       |       +---- Anthropic Messages API
        |       +---- Mock Provider
-       |       +---- Future Providers
+       |       +---- Future Providers (Ollama/local planned)
        |
        +---- Tool Registry
        |       +---- Repository Inspection
@@ -87,7 +88,7 @@ The improvement loop operates alongside the coding agent. It does not automatica
 | Component | Initial approach |
 |---|---|
 | Language | Python |
-| Model integration | OpenAI-compatible API |
+| Model integration | OpenAI-compatible API + Anthropic Messages API (config-driven, swappable) |
 | Offline development | Deterministic mock provider |
 | Testing | pytest |
 | Version control | Git |
@@ -158,7 +159,7 @@ ForgeLoop/
 - [x] **M3 — Evaluation infrastructure:** add trace persistence, evaluation datasets, baseline comparison, and regression reporting.
 - [x] **M4 — Feedback workflow:** implement reviewed corrections, findings, approval gates, and evaluation generation.
 - [x] **M5 — End-to-end demonstration:** demonstrate a verified failure-to-fix workflow with a reviewable patch.
-- [ ] **M6 — Hardening:** improve provider compatibility, resumability, security testing, observability, and operational documentation.
+- [x] **M6 — Hardening (shipped; live runs pending creds):** Anthropic adapter + provider factory, model comparison, checkpoint resume, security test suite, run ledger observability. Ollama/local adapter and live provider verification remain open.
 
 Milestones should be marked complete only after their acceptance criteria have been verified.
 
@@ -198,7 +199,15 @@ Run the end-to-end demonstration:
 python demo/run_demo.py
 ```
 
-Configure model providers via `examples/models.yaml` (default: `mock`; `openai_compat` reads `OPENAI_API_KEY`, `OPENAI_BASE_URL`, and `HARNESS_MODEL` from the environment).
+Configure model providers via `examples/models.yaml` (default: `mock`; `openai_compat` reads `OPENAI_API_KEY`, `OPENAI_BASE_URL`, and `HARNESS_MODEL`; `anthropic` reads `ANTHROPIC_API_KEY` and `HARNESS_ANTHROPIC_MODEL`). Provider selection is config-driven — switching models never requires orchestrator changes.
+
+Compare two eval reports (e.g. baseline vs candidate):
+
+```powershell
+python -m harness.cli compare --baseline artifacts/baseline_report.json --candidate artifacts/eval_report.json
+```
+
+Every `task-run` / `eval-run` appends cost and latency records to `.harness/ledger.jsonl` for model-comparison audits.
 
 ## Security model
 
